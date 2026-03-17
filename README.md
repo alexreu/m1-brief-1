@@ -36,30 +36,30 @@ joblib.dump(model, base_model_path)
 3. Entraînement du modèle
 
 ```python
-    # Earlystopping callback pour éviter le sur-apprentissage
-    early_stop = EarlyStopping(
-        monitor="val_loss", patience=10, restore_best_weights=True
-    )
+# Earlystopping callback pour éviter le sur-apprentissage
+early_stop = EarlyStopping(
+    monitor="val_loss", patience=10, restore_best_weights=True
+)
 
-    # Chargement du nouveau modèle
-    loaded_model = joblib.load(base_model_path)
-    mlflow.sklearn.log_model(
-        loaded_model, name=base_model_path.split("/")[1].replace(".pkl", "")
-    )
+# Chargement du nouveau modèle
+loaded_model = joblib.load(base_model_path)
+mlflow.sklearn.log_model(
+    loaded_model, name=base_model_path.split("/")[1].replace(".pkl", "")
+)
 
-    # Entraînement du nouveau modèle
-    model, hist = train_model(
-        loaded_model,
-        X_train,
-        y_train,
-        X_val=X_test,
-        y_val=y_test,
-        epochs=10000,
-        callbacks=[early_stop],
-    )
+# Entraînement du nouveau modèle
+model, hist = train_model(
+    loaded_model,
+    X_train,
+    y_train,
+    X_val=X_test,
+    y_val=y_test,
+    epochs=10000,
+    callbacks=[early_stop],
+)
 
-    # Sauvegarde du modèle entrainé
-    joblib.dump(model, base_model_path)
+# Sauvegarde du modèle entrainé
+joblib.dump(model, base_model_path)
 ```
 
 4. Lancement du run pour l'entrainement du nouveau modèle et la récole des metrics
