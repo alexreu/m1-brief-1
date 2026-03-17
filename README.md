@@ -1,75 +1,85 @@
-# Bienvenue dans ce projet d'IA
+# Réentraînement d'un modèle
 
-Installation : 
+## Objectif
 
-    python -m venv .venv
+Ce projet entraîne un modèle de régression puis suit les performances dans MLflow pour comparer les runs de réentraînement.
 
+---
 
-Activation :
+## Modifications réalisées
 
-Windows (PowerShell) :
+- `main.py`
+  - Intégration de MLFlow
+  - Création d'un nouveau modèle `model_2026_03`
+- Logging des métriques d’évaluation finale grace à MLFlow :
+  - `MSE`, `MAE`, `R²`
 
-    .\.venv\Scripts\Activate.ps1
+## Processus d'entrainement
 
-Windows (CMD) :
+1. Chargement le dataset : `data/df_new.csv`.
 
-    .\.venv\Scripts\activate.bat
+```python
+base_data_path = join("data", "df_new.csv")
+```
 
-macOS / Linux :
+2. Création du nouveau modèle : `model_2026_03`
 
-    source .venv/bin/activate
+```python
+base_model_path = join("models", "model_2026_03.pkl")
 
+# Création du modèle
+model = create_nn_model(X_train.shape[1])
+# Sauvegarde du nouveau modèle
+joblib.dump(model, base_model_path)
+```
 
-Installation des dépendances : 
+3. Entraînement du modèle
 
-    pip install -r requirements.txt
+```python
+    # Earlystopping callback pour éviter le sur-apprentissage
+    early_stop = EarlyStopping(
+        monitor="val_loss", patience=10, restore_best_weights=True
+    )
 
+    # Chargement du nouveau modèle
+    loaded_model = joblib.load(base_model_path)
+    mlflow.sklearn.log_model(
+        loaded_model, name=base_model_path.split("/")[1].replace(".pkl", "")
+    )
 
-# Le modèle d'IA
+    # Entraînement du nouveau modèle
+    model, hist = train_model(
+        loaded_model,
+        X_train,
+        y_train,
+        X_val=X_test,
+        y_val=y_test,
+        epochs=10000,
+        callbacks=[early_stop],
+    )
 
-Nous avons ici un réseau de neurones (NN) avec :
-2 couches "denses"
-1 couche de prédiction
+    # Sauvegarde du modèle entrainé
+    joblib.dump(model, base_model_path)
+```
 
-# Architecture du projet
+4. Lancement du run pour l'entrainement du nouveau modèle et la récole des metrics
 
-    .
-    ├── data/
-    │   ├── df_new.csv
-    │   └── df_old.csv
-    ├── models/
-    │   ├── models.py
-    │   ├── model_2024_08.pkl
-    │   └── preprocessor.pkl
-    ├── modules/
-    │   ├── evaluate.py
-    │   ├── preprocess.py
-    │   └── print_draw.py
-    ├── .gitignore
-    ├── README.md
-    ├── main.py
-    └── requirements.txt
+```bash
+python main.py
+```
 
+## Analyse des résultats
 
-data/ 
+![MSE / MAE](public/images/model_performance.png)
 
-C'est là que sont stockées les données.
+Le `premier` run en bas est le run avec l'ancien modèle et les anciennes données
 
-    df_new.csv : Les données fraîches du jour, prêtes à être dévorées par notre IA.
-    df_old.csv : Les anciennes données ayant servis à l'apprentissage initial du modèle
+Le `deuxième` run est un run avec l'ancien modèle et les nouvelles données
 
-models/ 
+Le `troisième` run est celui avec le nouveau modèle et les nouvelles données
 
-C'est là que sont stockés les modèles
+Le `quatrième` et dernier run est celui du nouveau modèle et les anciennes données
 
-    models.py : C'est ici que l'on définit l'architecture de notre NN.
-    model_2024_08.pkl : Une version sauvegardée de notre modèle. 
-    preprocessor.pkl : le preparateur de données
+#### Pour conclure le nouveau modèle est plus performant que l'ancien modèle que ce soit sur les nouvelles ou anciennes données.
 
-modules/ 
-
-C'est là que le code python se découpe en modules ayant chaque une tâche définie
-
-    evaluate.py : Module d'évaluation du modèle.
-    preprocess.py : Module de préparation des données
-    print_draw.py : Module d'affichage des résultats
+## [Export MLFlow - csv](public/runs/runs.csv)

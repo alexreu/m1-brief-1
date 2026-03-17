@@ -1,0 +1,5 @@
+"Start Time","Duration","Run ID","Name","Source Type","Source Name","User","Status","base_data_path","MAE","MSE","R²"
+"2026-03-17 19:57:52","4.1s","9cd1b2608ddc43bc9db04554476ea08e","legendary-duck-374","LOCAL","main.py","alexandreadolphe","FINISHED","data/df_old.csv","3596.8716202333685","22206818.80570071","0.8486909954056066"
+"2026-03-17 19:57:03","12.5s","35d710a2b9f347cb87380b07750660e1","glamorous-ox-681","LOCAL","main.py","alexandreadolphe","FINISHED","data/df_new.csv","2394.58323224551","13454454.381754579","0.8757120074546481"
+"2026-03-17 19:56:20","4.0s","9b3f358c4fc242e1a243ab54aca85426","selective-shark-480","LOCAL","main.py","alexandreadolphe","FINISHED","data/df_new.csv","3807.6587872473697","26369549.77811704","0.7564064425614045"
+"2026-03-17 19:56:04","4.4s","2f113b96a12c48368d2d2eb00387a9b7","big-lamb-781","LOCAL","main.py","alexandreadolphe","FINISHED","data/df_old.csv","4732.215856894766","33935248.41724301","0.7687778378522918"

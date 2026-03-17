@@ -12,10 +12,10 @@ def create_nn_model(input_dim):
     model.compile(optimizer='adam', loss='mse')
     return model
 
-def train_model(model, X, y, X_val=None, y_val=None, epochs=50, batch_size=32, verbose=0 ):
+def train_model(model, X, y, X_val=None, y_val=None, epochs=50, batch_size=32, verbose=0, callbacks=None ):
     hist = model.fit(X, y, 
                 validation_data=(X_val, y_val) if X_val is not None and y_val is not None else None,
-                epochs=epochs, batch_size=batch_size, verbose=verbose)
+                epochs=epochs, batch_size=batch_size, verbose=verbose, callbacks=callbacks)
     return model , hist
 
 def model_predict(model, X):
