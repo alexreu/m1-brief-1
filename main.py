@@ -19,7 +19,7 @@ base_data_path = join("data", "df_new.csv")
 with mlflow.start_run():
     mlflow.log_param("base_data_path", base_data_path)
 
-    # Chargement des datasets
+    # load dataset
     df = pd.read_csv(base_data_path)
 
     # preprocesser les data
@@ -31,7 +31,7 @@ with mlflow.start_run():
     # create a new model
     # model = create_nn_model(X_train.shape[1])
 
-    # sauvegarder le nouveau modèle
+    # save new model after creation
     # joblib.dump(model, base_model_path)
 
     # earlystopping callback
@@ -39,12 +39,13 @@ with mlflow.start_run():
     #     monitor="val_loss", patience=10, restore_best_weights=True
     # )
 
-    # entraîner le modèle
+    # load model
     loaded_model = joblib.load(base_model_path)
     mlflow.sklearn.log_model(
         loaded_model, name=base_model_path.split("/")[1].replace(".pkl", "")
     )
 
+    # train model
     # model, hist = train_model(
     #     loaded_model,
     #     X_train,
@@ -55,13 +56,12 @@ with mlflow.start_run():
     #     callbacks=[early_stop],
     # )
 
-    # sauvegarder le modèle entrainé
+    # save trained model
     # joblib.dump(model, base_model_path)
 
-    # Graphique directement dans mlflow
     # draw_loss(hist)
 
-    # charger le modèle
+    # load trained model
     # loaded_model = joblib.load(base_model_path)
 
     # predire sur les valeurs de train
